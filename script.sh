@@ -1,6 +1,6 @@
 #!/bin/sh
 
-hdfs dfs -put kmeans_data.txt kmeans_data.txt
-hdfs dfs -put streaming_kmeans_data_test.txt streaming_kmeans_data_test.txt
+hdfs dfs -put Kmeans_features_k3_f4_1000.csv Kmeans_features_k3_f4_1000.csv
+hdfs dfs -put Kmeans_centers_k3_f4_1000.csv Kmeans_centers_k3_f4_1000.csv
 
 spark-submit streaming_k_means.py
