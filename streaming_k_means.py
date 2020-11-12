@@ -30,7 +30,7 @@ if __name__ == "__main__":
     # we make an input stream of vectors for training,
     # as well as a stream of vectors for testing
 
-    trainingData = sc.textFile("./Kmeans_features_k3_f4_1000")\
+    trainingData = sc.textFile("./Kmeans_features_k3_f4_1000.csv")\
         .map(lambda line: Vectors.dense([float(x) for x in line.strip().split(',')]))
 
     # testingData = sc.textFile("./Kmeans_centers_k3_f4_1000").map(parse)
