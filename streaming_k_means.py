@@ -15,6 +15,7 @@
 # limitations under the License.
 #
 
+import os
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 # $example on$
@@ -30,17 +31,34 @@ if __name__ == "__main__":
     # we make an input stream of vectors for training,
     # as well as a stream of vectors for testing
 
-    trainingData = sc.textFile("./Kmeans_features_k3_f4_1000.csv")\
+    feature_path = "./"
+    initCenters_path = "./"
+
+    for f in os.listdir('.'):
+        if os.path.isfile(f) and f.endswith(".csv"):
+            if "Kmeans_features" in f:
+                feature_path += f
+            if "Kmeans_initCenters" in f:
+                initCenters_path += f
+
+    trainingData = sc.textFile(feature_path)\
         .map(lambda line: Vectors.dense([float(x) for x in line.strip().split(',')]))
 
     # testingData = sc.textFile("./Kmeans_centers_k3_f4_1000").map(parse)
+
+    rawInitCenters = sc.textFile(initCenters_path)\
+        .map(lambda line: [float(x) for x in line.strip().split(',')])
+
+    num_centers = 3
+    centerWeights = [1.0]*num_centers
+    initialCenters = rawInitCenters.collect()
 
     trainingQueue = [trainingData]
 
     trainingStream = ssc.queueStream(trainingQueue)
 
     # We create a model with random clusters and specify the number of clusters to find
-    model = StreamingKMeans(k=3, decayFactor=1.0).setRandomCenters(4, 1.0, 0)
+    model = StreamingKMeans(k=3, decayFactor=1.0).setInitialCenters(initialCenters, centerWeights)
 
     # Now register the streams for training and testing and start the job,
     # printing the predicted cluster assignments on new data points as they arrive.
@@ -50,4 +68,4 @@ if __name__ == "__main__":
     ssc.stop(stopSparkContext=True, stopGraceFully=True)
     # $example off$
 
-    print("Final centers: " + str(model.latestModel().centers))
+    print("Final centers: " + str(model.latestModel().clusterCenters))
