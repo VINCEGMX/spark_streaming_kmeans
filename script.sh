@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for entry in "*.csv"
+for entry in *.csv
 do
 	hdfs dfs -put $entry $entry
 done
