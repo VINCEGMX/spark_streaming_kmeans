@@ -31,15 +31,18 @@ if __name__ == "__main__":
     # we make an input stream of vectors for training,
     # as well as a stream of vectors for testing
 
-    feature_path = "./"
-    initCenters_path = "./"
+    # feature_path = "./"
+    # initCenters_path = "./"
 
-    for f in os.listdir('.'):
-        if os.path.isfile(f) and f.endswith(".csv"):
-            if "Kmeans_features" in f:
-                feature_path += f
-            if "Kmeans_initCenters" in f:
-                initCenters_path += f
+    # for f in os.listdir('.'):
+    #     if os.path.isfile(f) and f.endswith(".csv"):
+    #         if "Kmeans_features" in f:
+    #             feature_path += f
+    #         if "Kmeans_initCenters" in f:
+    #             initCenters_path += f
+
+    feature_path = "s3://comp5349-vince/Kmeans_features_k3_f4_10000000.csv"
+    initCenters_path = "s3://comp5349-vince/Kmeans_initCenters_k3_f4_10000000.csv"
 
     trainingData = sc.textFile(feature_path)\
         .map(lambda line: Vectors.dense([float(x) for x in line.strip().split(',')]))
@@ -53,7 +56,9 @@ if __name__ == "__main__":
     centerWeights = [1.0]*num_centers
     initialCenters = rawInitCenters.collect()
 
-    trainingQueue = [trainingData]
+
+    splitWeights = [1.0]*10
+    trainingQueue = trainingData.randomSplit(splitWeights)
 
     trainingStream = ssc.queueStream(trainingQueue)
 
