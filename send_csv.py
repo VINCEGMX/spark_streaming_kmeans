@@ -2,7 +2,7 @@ import socket
 import time
 
 host = 'localhost'
-port = 12345
+port = 9999
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((host, port))
@@ -14,10 +14,10 @@ while True:
     try:
         print('\nReading file...\n')
         start = time.time()
-        with open('iris.csv') as f:
+        with open("Kmeans_features_k3_f4_10000.csv") as f:
             for line in f:
                 out = line.encode('utf-8')
-                print('Sending line',line)
+                # print('Sending line',line)
                 conn.send(out)
                 # sleep()
             print('End Of Stream.')

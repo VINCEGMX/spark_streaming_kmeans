@@ -26,6 +26,7 @@ from pyspark.mllib.clustering import StreamingKMeans
 if __name__ == "__main__":
     sc = SparkContext(appName="StreamingKMeansExample")  # SparkContext
     ssc = StreamingContext(sc, 1)
+    lines = ssc.socketTextStream("localhost", 9999)
 
     # $example on$
     # we make an input stream of vectors for training,
@@ -41,11 +42,9 @@ if __name__ == "__main__":
     #         if "Kmeans_initCenters" in f:
     #             initCenters_path += f
 
-    feature_path = "s3://comp5349-vince/Kmeans_features_k3_f4_10000000.csv"
-    initCenters_path = "s3://comp5349-vince/Kmeans_initCenters_k3_f4_10000000.csv"
+    initCenters_path = "s3://comp5349-vince/Kmeans_initCenters_k3_f4_10000.csv"
 
-    trainingData = sc.textFile(feature_path)\
-        .map(lambda line: Vectors.dense([float(x) for x in line.strip().split(',')]))
+    trainingStream = lines.map(lambda line: Vectors.dense([float(x) for x in line.strip().split(',')]))
 
     # testingData = sc.textFile("./Kmeans_centers_k3_f4_1000").map(parse)
 
@@ -55,12 +54,6 @@ if __name__ == "__main__":
     num_centers = 3
     centerWeights = [1.0]*num_centers
     initialCenters = rawInitCenters.collect()
-
-
-    splitWeights = [1.0]*10
-    trainingQueue = trainingData.randomSplit(splitWeights)
-
-    trainingStream = ssc.queueStream(trainingQueue)
 
     # We create a model with random clusters and specify the number of clusters to find
     model = StreamingKMeans(k=3, decayFactor=1.0).setInitialCenters(initialCenters, centerWeights)
