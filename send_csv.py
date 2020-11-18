@@ -14,7 +14,7 @@ while True:
     try:
         print('\nReading file...\n')
         start = time.time()
-        with open("Kmeans_features_k3_f4_10000.csv") as f:
+        with open(str(sys.argv[1])) as f:
             for line in f:
                 out = line.encode('utf-8')
                 # print('Sending line',line)
