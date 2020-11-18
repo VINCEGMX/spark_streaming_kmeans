@@ -46,7 +46,7 @@ if __name__ == "__main__":
     #             initCenters_path += f
 
     s3_folder = "s3://comp5349-vince/"
-    s3_subfolder = "Kmeans_k3_f4_100KB"
+    s3_subfolder = "Kmeans_k3_f4_1GB"
 
     initCenters_path = s3_folder + s3_subfolder + "_initCenters.csv"
     trueCenters_path = s3_subfolder + "_centers.csv"
