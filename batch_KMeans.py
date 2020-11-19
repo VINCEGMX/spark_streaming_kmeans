@@ -9,12 +9,12 @@ if __name__ == "__main__":
         .setAppName("batch_KMeans")
     sc=SparkContext.getOrCreate(spark_conf)
 
-    s3_folder = "s3://vince-streaming-kmeans/"
+    s3_folder = "s3://comp5349-vince/"
     s3_subfolder = "Kmeans_features_k3_f4_1GB/"
 
-    feature_paths = [s3_folder + s3_subfolder + "Kmeans_features_k3_f4_1GB"]*10
-    initCenters_path = s3_folder + s3_subfolder + "Kmeans_initCenters_k3_f4_1GB.csv"
-    trueCenters_path = s3_folder + s3_subfolder + "Kmeans_centers_k3_f4_1GB.csv"
+    feature_paths = [s3_folder + s3_subfolder + "Kmeans_k3_f4_1GB_features"]*10
+    initCenters_path = s3_folder + s3_subfolder + "Kmeans_k3_f4_1GB_initCenters.csv"
+    trueCenters_path = s3_folder + s3_subfolder + "Kmeans_k3_f4_1GB_centers.csv"
 
     trainingData = sc.textFile(feature_paths[0]+"_1.csv")\
         .map(lambda line: Vectors.dense([float(x) for x in line.strip().split(',')])).persist()
